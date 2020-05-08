@@ -2,7 +2,7 @@
 
 This project extends JavaScript and TypeScript support of [Kakoune](https://github.com/mawww/kakoune).
 It provides additional commands for linting and formatting of your files.
-All formatting and linting will be done according to your local project preferences, e.g. in .eslintrc.js.
+All formatting and linting will be done according to your local project preferences, e.g. in `.eslintrc.js`.
 
 It does not provide additional language features.
 For that, check the [Kakoune Language Server Protocol Client](https://github.com/ul/kak-lsp) instead.
@@ -14,9 +14,9 @@ For that, check the [Kakoune Language Server Protocol Client](https://github.com
 kak-jsts has two dependencies that must be available on your machine:
 
 1. [eslint-formatter-kakoune](https://github.com/Delapouite/eslint-formatter-kakoune):
-  * `npm i -g eslint-formatter-kakoune`
+    * `npm i -g eslint-formatter-kakoune`
 2. [jq](https://github.com/stedolan/jq)
-  * Check installation instructions for your system (e.g. `brew install jq`).
+    * Check installation instructions for your system (e.g. `brew install jq`).
 
 eslint-formatter-kakoune is required to enable Kakoune to interpret eslint's output.
 
