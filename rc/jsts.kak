@@ -7,7 +7,10 @@
 # │ github.com/schemar/kak-jsts │
 # ╰─────────────────────────────╯
 
-define-command format-eslint %{
+define-command format-eslint -docstring %{
+    Formats the current buffer using eslint.
+    Respects your local project setup in eslintrc.
+} %{
     evaluate-commands -draft -no-hooks -save-regs '|' %{
         # Select all to format
         execute-keys '%'
@@ -30,7 +33,10 @@ define-command format-eslint %{
     }
 }
 
-define-command format-prettier %{
+define-command format-prettier -docstring %{
+    Formats the current buffer using prettier.
+    Respects your local project setup in prettierrc.
+} %{
     evaluate-commands -draft -no-hooks -save-regs '|' %{
         # Select all to format
         execute-keys '%'
@@ -48,7 +54,10 @@ define-command format-prettier %{
     }
 }
 
-define-command format-tslint %{
+define-command format-tslint -docstring %{
+    Formats the current buffer using tslint.
+    Writes the buffer to disk first, formats it there, and then reloads it.
+} %{
     evaluate-commands -draft -no-hooks %{
         # It is not possible to format with tslint using stdin.
         # Hence, it is required that the buffer be written to disk first,
