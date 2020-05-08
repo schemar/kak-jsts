@@ -76,8 +76,8 @@ define-command format-tslint -docstring %{
 # Setting eslint as linter for JS/TS files:
 hook global WinSetOption filetype=(javascript|typescript) %{
     # eslint as linter as per Kakoune Wiki.
-    # Unfortunately, due to how lint.kak is implemented, it doesn't allow custom options.
-    # Therefore the path is hardcoded here and must be overwritten manually if desired.
-    set window lintcmd 'run() { cat "$1" | npx eslint --format "/usr/local/lib/node_modules/eslint-formatter-kakoune/index.js" --stdin --stdin-filename "${kak_buffile}";} && run '
+    # Using `npm list` makes the command run on all systems regardless of the
+    # location of global packages, but it is much slower.
+    set window lintcmd 'run() { cat "$1" | npx eslint --format "$(npm list -g --depth=0 | head -1)/node_modules/eslint-formatter-kakoune/index.js" --stdin --stdin-filename "${kak_buffile}";} && run '
     lint-enable
 }

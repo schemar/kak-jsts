@@ -7,16 +7,16 @@ All formatting and linting will be done according to your local project preferen
 It does not provide additional language features.
 For that, check the [Kakoune Language Server Protocol Client](https://github.com/ul/kak-lsp) instead.
 
-**Make sure to check the [configuration](#configuration) below.**
-
 ## Installation
 
 ### Prerequisites
 
 kak-jsts has two dependencies that must be available on your machine:
 
-1. [eslint-formatter-kakoune](https://github.com/Delapouite/eslint-formatter-kakoune) (e.g. `npm i -g eslint-formatter-kakoune`)
-2. [jq](https://github.com/stedolan/jq) (e.g. `brew install jq`)
+1. [eslint-formatter-kakoune](https://github.com/Delapouite/eslint-formatter-kakoune):
+  * `npm i -g eslint-formatter-kakoune`
+2. [jq](https://github.com/stedolan/jq)
+  * Check installation instructions for your system (e.g. `brew install jq`).
 
 eslint-formatter-kakoune is required to enable Kakoune to interpret eslint's output.
 
@@ -54,28 +54,7 @@ command to use eslint for JavaScript and TypeScript files.
 All formatting and linting will be done according to your local project preferences, e.g. in `.eslintrc.js`.
 Kakoune must run in the root of the project for that to work.
 
-## Configuration
-
-### Path to `node_modules`
-
-kak-jsts assumes your global node modules to be installed at `/usr/local/lib/node_modules/`.
-If this is not the case, you must overwrite the `lintcmd`.
-Due to how [`lint.kak`](https://github.com/mawww/kakoune/blob/master/rc/tools/lint.kak) is implemented,
-it doesn't allow the path to be set via a Kakoune option.
-
-As an example, if your global node_modules path is `$HOME/.npm-global/lib/node_modules/`,
-you would need to set the `lintcmd` like so:
-
-```kak
-plug "schemar/kak-jsts" config %{
-    hook global WinSetOption filetype=(javascript|typescript) %{
-        # Replace path below with your path to your global node_modules:
-        set window lintcmd 'run() { cat "$1" | npx eslint -f ~/.npm-global/lib/node_modules/eslint-formatter-kakoune/index.js --stdin --stdin-filename "$kak_buffile";} && run '
-    }
-}
-```
-
-### Example Mapping
+## Configuration Examples
 
 ```kak
 plug "schemar/kak-jsts" config %{
