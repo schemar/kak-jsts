@@ -61,6 +61,13 @@ plug "schemar/kak-jsts" config %{
     hook global WinSetOption filetype=(javascript|typescript) %{
         map window user l -docstring 'lint' ': lint<ret>'
         map window user f -docstring 'format' ': format-eslint<ret>'
+        
+        # If you want to format before every write, you could do s.th. like this:
+        hook window BufWritePre .* %{
+            evaluate-commands -no-hooks %{
+                format-eslint
+            }
+        }
     }
 }
 ```
