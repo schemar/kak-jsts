@@ -18,14 +18,20 @@ define-command format-eslint -docstring %{
         # eslint does a fix-dry-run with a json formatter which results in a JSON output to stdout that includes the fixed file.
         # jq then extracts the fixed file output from the JSON. -j returns the raw output without any escaping.
         set-register '|' %{
-            %sh{
-                echo "$kak_selection" | \
-                npx eslint --format json \
-                           --fix-dry-run \
-                           --stdin \
-                           --stdin-filename "$kak_buffile" | \
-                jq -j ".[].output"
-            }
+            format_out="$(mktemp)"
+            cat | \
+            npx eslint --format json \
+                       --fix-dry-run \
+                       --stdin \
+                       --stdin-filename "$kak_buffile" | \
+            jq -j ".[].output" > "$format_out"
+            if [ $? -eq 0 ] && [ $(wc -c < "$format_out") -gt 4 ]; then
+                cat "$format_out"
+            else
+                printf 'eval -client %s %%{ fail eslint formatter returned an error %s }\n' "$kak_client" "$?" | kak -p "$kak_session"
+                printf "%s" "$kak_quoted_selection"
+            fi
+            rm -f "$format_out"
         }
 
         # Replace all with content from register:
