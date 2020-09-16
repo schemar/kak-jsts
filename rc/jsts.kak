@@ -85,5 +85,5 @@ hook global WinSetOption filetype=(javascript|typescript) %{
     # Using `npm list` makes the command run on all systems regardless of the
     # location of global packages, but it is much slower.
     set window lintcmd 'run() { cat "$1" | npx eslint --format "$(npm list -g --depth=0 | head -1)/node_modules/eslint-formatter-kakoune/index.js" --stdin --stdin-filename "${kak_buffile}";} && run '
-    lint-enable
+    lint-show-diagnostics
 }
