@@ -39,6 +39,8 @@ from your `kakrc`.
 
 ## Usage
 
+### Formatting:
+
 kak-jsts provides three new commands:
 
 1. `format-eslint`
@@ -48,10 +50,24 @@ kak-jsts provides three new commands:
 `format-eslint` and `format-pretter` will format your buffer without touching the disk.
 Due to a limitation in `tslint`, your buffer will be written, formatted on disk, and then reloaded.
 
-Furthermore, kak-jsts sets Kakoune's [lint](https://github.com/mawww/kakoune/blob/master/rc/tools/lint.kak)
+All formatting will be done according to your local project preferences, e.g. in `.eslintrc.js`.
+Kakoune must run in the root of the project for that to work.
+
+### Other
+
+kak-jsts provides implementations for common kakoune commands:
+
+1. `alt`
+2. `lint`
+
+`alt` jumps to the alternate file (implementation ↔ test).
+Jumps between implementation und .test.(js|ts) or .spec.(js|ts) in the same directory.
+`alt` is an alias to `jsts-alternative-file`.
+
+Kak-jsts sets Kakoune's [lint](https://github.com/mawww/kakoune/blob/master/rc/tools/lint.kak)
 command to use eslint for JavaScript and TypeScript files.
 
-All formatting and linting will be done according to your local project preferences, e.g. in `.eslintrc.js`.
+Linting will be done according to your local project preferences, e.g. in `.eslintrc.js`.
 Kakoune must run in the root of the project for that to work.
 
 ## Configuration Examples

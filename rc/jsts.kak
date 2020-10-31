@@ -2,10 +2,30 @@
 # │ Author:        ║ File:      │
 # │ Martin Schenck ║ jsts.kak   │
 # ╞════════════════╩════════════╡
-# │ JS/TS linting/formatting    │
+# │ JS/TS extension             │
 # ╞═════════════════════════════╡
 # │ github.com/schemar/kak-jsts │
 # ╰─────────────────────────────╯
+
+# Initialization
+# ‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+hook global WinSetOption filetype=(javascript|typescript) %{
+    # eslint as linter as per Kakoune Wiki.
+    # Using `npm list` makes the command run on all systems regardless of the
+    # location of global packages, but it is much slower.
+    set window lintcmd 'run() { cat "$1" | npx eslint --format "$(npm list -g --depth=0 | head -1)/node_modules/eslint-formatter-kakoune/index.js" --stdin --stdin-filename "${kak_buffile}";} && run '
+    lint-show-diagnostics
+
+    alias window alt jsts-alternative-file
+
+    hook -once -always window WinSetOption filetype=.* %{
+        unalias window alt jsts-alternative-file
+    }
+}
+
+# Commands
+# ‾‾‾‾‾‾‾‾
 
 define-command format-eslint -docstring %{
     Formats the current buffer using eslint.
@@ -79,11 +99,50 @@ define-command format-tslint -docstring %{
     }
 }
 
-# Setting eslint as linter for JS/TS files:
-hook global WinSetOption filetype=(javascript|typescript) %{
-    # eslint as linter as per Kakoune Wiki.
-    # Using `npm list` makes the command run on all systems regardless of the
-    # location of global packages, but it is much slower.
-    set window lintcmd 'run() { cat "$1" | npx eslint --format "$(npm list -g --depth=0 | head -1)/node_modules/eslint-formatter-kakoune/index.js" --stdin --stdin-filename "${kak_buffile}";} && run '
-    lint-show-diagnostics
+define-command jsts-alternative-file -docstring %{
+    Jump to the alternate file (implementation ↔ test).
+    Jumps between implementation und .test.(js|ts) or .spec.(js|ts) in the same directory.
+} %{
+    evaluate-commands %sh{
+        case $kak_buffile in
+            *.test.ts)
+                altfile=${kak_buffile%.test.ts}.ts
+                test ! -f "$altfile" && echo "fail 'implementation file not found'" && exit
+            ;;
+            *.test.js)
+                altfile=${kak_buffile%.test.js}.js
+                test ! -f "$altfile" && echo "fail 'implementation file not found'" && exit
+            ;;
+            *.spec.ts)
+                altfile=${kak_buffile%.spec.ts}.ts
+                test ! -f "$altfile" && echo "fail 'implementation file not found'" && exit
+            ;;
+            *.spec.js)
+                altfile=${kak_buffile%.spec.js}.js
+                test ! -f "$altfile" && echo "fail 'implementation file not found'" && exit
+            ;;
+            *.ts)
+                altfile=${kak_buffile%.ts}.test.ts
+                test ! -f "$altfile" && \
+                    # Check for spec if test doesn't exist:
+                    altfile=${kak_buffile%.ts}.spec.ts && \
+                    test ! -f "$altfile" && \
+                    echo "fail 'test file not found'" && \
+                    exit
+            ;;
+            *.js)
+                altfile=${kak_buffile%.js}.test.js
+                test ! -f "$altfile" && \
+                    # Check for spec if test doesn't exist:
+                    altfile=${kak_buffile%.js}.spec.js && \
+                    test ! -f "$altfile" && \
+                    echo "fail 'test file not found'" && \
+                    exit
+            ;;
+            *)
+                echo "fail 'alternative file not found'" && exit
+            ;;
+        esac
+        printf "edit '%s'" "${altfile}"
+    }
 }
